@@ -1,5 +1,6 @@
+namespace Experimentor.Strategy;
+
 using System.Diagnostics;
-namespace Experimentor;
 
 public class RandomSelectionExperimentStrategy<T> : IExperimentStrategy<T>
 {

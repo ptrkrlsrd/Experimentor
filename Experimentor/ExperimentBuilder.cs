@@ -1,4 +1,5 @@
-namespace Experimentor.Strategy;
+using Experimentor.Strategy;
+namespace Experimentor;
 
 public class ExperimentBuilder<T>
 {
@@ -25,8 +26,8 @@ public class ExperimentBuilder<T>
         return this;
     }
 
-    public ExperimentStrategy<T> Build()
+    public SimpleExperimentStrategy<T> Build()
     {
-        return new ExperimentStrategy<T>(_controlBehavior, _candidateBehaviors, _strategySelector);
+        return new SimpleExperimentStrategy<T>(_controlBehavior, _candidateBehaviors, _strategySelector);
     }
 }
