@@ -20,18 +20,10 @@ public class SimpleExperimentStrategy<T>
     {
         string selectedStrategy = _strategySelector("control", new List<string>(_candidateBehaviors.Keys));
         var stopwatch = Stopwatch.StartNew();
-        T result;
 
-        if (selectedStrategy == "control")
-        {
-            result = _controlBehavior();
-        }
-        else
-        {
-            result = _candidateBehaviors[selectedStrategy]();
-        }
+        T result = selectedStrategy == "control" ? _controlBehavior() : _candidateBehaviors[selectedStrategy]();
 
         stopwatch.Stop();
-        return new ExperimentResult<T>(result, selectedStrategy);
+        return new ExperimentResult<T>(result, selectedStrategy, stopwatch.Elapsed);
     }
 }

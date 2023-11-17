@@ -7,12 +7,6 @@ public class ExperimentResult<T>
     public TimeSpan Duration { get; private set; }
     public Dictionary<string, (T result, TimeSpan duration)> CandidateResults { get; set; }
 
-    public ExperimentResult(T result, string behaviorName)
-    {
-        Result = result;
-        BehaviorName = behaviorName;
-    }
-
     public ExperimentResult(T result, string behaviorName, TimeSpan duration)
     {
         Result = result;

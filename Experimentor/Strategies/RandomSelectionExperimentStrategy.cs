@@ -1,6 +1,7 @@
 namespace Experimentor.Strategy;
 
 using System.Diagnostics;
+using System.Collections.Generic;
 
 public class RandomSelectionExperimentStrategy<T> : IExperimentStrategy<T>
 {
@@ -24,22 +25,19 @@ public class RandomSelectionExperimentStrategy<T> : IExperimentStrategy<T>
     {
         var stopwatch = Stopwatch.StartNew();
 
-        T resultValue;
-        string behaviorName;
 
-        if (_random.NextDouble() < _controlProbability)
-        {
-            resultValue = _controlBehavior();
-            behaviorName = "control";
-        }
-        else
+        bool useCandidate = _random.NextDouble() >= _controlProbability;
+        if (useCandidate)
         {
             int candidateIndex = _random.Next(_candidateBehaviors.Count);
             KeyValuePair<string, Func<T>> selectedCandidate = _candidateBehaviors.ElementAt(candidateIndex);
-            resultValue = selectedCandidate.Value();
-            behaviorName = selectedCandidate.Key;
+            stopwatch.Stop();
+
+            return new ExperimentResult<T>(selectedCandidate.Value(), selectedCandidate.Key, stopwatch.Elapsed);
         }
 
+        T resultValue = _controlBehavior();
+        var behaviorName = "control";
         stopwatch.Stop();
         return new ExperimentResult<T>(resultValue, behaviorName, stopwatch.Elapsed);
     }

@@ -7,11 +7,10 @@ public class ExperimentBuilder<T>
     private readonly Dictionary<string, Func<T>> _candidateBehaviors = new();
     private Func<string, List<string>, string> _strategySelector;
 
-    // Constructor requires control behavior
     public ExperimentBuilder(Func<T> controlBehavior)
     {
         _controlBehavior = controlBehavior ?? throw new ArgumentNullException(nameof(controlBehavior));
-        _strategySelector = (control, candidates) => "control";
+        _strategySelector = (_, _) => "control";
     }
 
     public ExperimentBuilder<T> AddCandidate(string name, Func<T> candidateBehavior)
