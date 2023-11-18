@@ -1,16 +1,19 @@
 using Experimentor.Strategy;
+using System;
+using System.Collections.Generic;
+
 namespace Experimentor;
 
 public class ExperimentBuilder<T>
 {
     private readonly Func<T> _controlBehavior;
     private readonly Dictionary<string, Func<T>> _candidateBehaviors = new();
-    private Func<string, List<string>, string> _strategySelector;
+    private IExperimentStrategy<T>? _selectedStrategy;
+    private bool _strategySet;
 
     public ExperimentBuilder(Func<T> controlBehavior)
     {
         _controlBehavior = controlBehavior ?? throw new ArgumentNullException(nameof(controlBehavior));
-        _strategySelector = (_, _) => "control";
     }
 
     public ExperimentBuilder<T> AddCandidate(string name, Func<T> candidateBehavior)
@@ -19,14 +22,37 @@ public class ExperimentBuilder<T>
         return this;
     }
 
-    public ExperimentBuilder<T> SetStrategySelector(Func<string, List<string>, string> strategySelector)
+    private void SetStrategy(IExperimentStrategy<T> strategy)
     {
-        _strategySelector = strategySelector ?? throw new ArgumentNullException(nameof(strategySelector));
+        if (_strategySet)
+        {
+            throw new InvalidOperationException("A strategy has already been set for this experiment.");
+        }
+
+        _selectedStrategy = strategy;
+        _strategySet = true;
+    }
+
+    public ExperimentBuilder<T> UseRandomSelectionStrategy(double controlProbability = 0.5)
+    {
+        SetStrategy(new RandomSelectionExperimentStrategy<T>(_controlBehavior, _candidateBehaviors, controlProbability));
         return this;
     }
 
-    public SimpleExperimentStrategy<T> Build()
+    public ExperimentBuilder<T> UseComparativeExperimentStrategy()
     {
-        return new SimpleExperimentStrategy<T>(_controlBehavior, _candidateBehaviors, _strategySelector);
+        SetStrategy(new ComparativeExperimentStrategy<T>(_controlBehavior, _candidateBehaviors));
+        return this;
+    }
+
+    public ExperimentBuilder<T> UseSimpleExperimentStrategy(Func<string, List<string>, string> strategySelector)
+    {
+        SetStrategy(new SimpleExperimentStrategy<T>(_controlBehavior, _candidateBehaviors, strategySelector));
+        return this;
+    }
+
+    public IExperimentStrategy<T> Build()
+    {
+        return _selectedStrategy ?? new RandomSelectionExperimentStrategy<T>(_controlBehavior, _candidateBehaviors);
     }
 }

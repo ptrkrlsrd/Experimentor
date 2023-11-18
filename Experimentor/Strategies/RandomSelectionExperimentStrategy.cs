@@ -9,6 +9,7 @@ public class RandomSelectionExperimentStrategy<T> : IExperimentStrategy<T>
     private readonly Dictionary<string, Func<T>> _candidateBehaviors;
     private readonly Random _random;
     private readonly double _controlProbability;
+    public event Action<ExperimentResult<T>>? OnControlCompleted;
 
     public RandomSelectionExperimentStrategy(
         Func<T> controlBehavior, 
@@ -24,18 +25,23 @@ public class RandomSelectionExperimentStrategy<T> : IExperimentStrategy<T>
     public ExperimentResult<T> Run()
     {
         var stopwatch = Stopwatch.StartNew();
-
-
         bool useCandidate = _random.NextDouble() >= _controlProbability;
         if (useCandidate)
         {
             int candidateIndex = _random.Next(_candidateBehaviors.Count);
             KeyValuePair<string, Func<T>> selectedCandidate = _candidateBehaviors.ElementAt(candidateIndex);
             stopwatch.Stop();
+            
+            OnControlCompleted?.Invoke(ControlExperimentResult());
 
             return new ExperimentResult<T>(selectedCandidate.Value(), selectedCandidate.Key, stopwatch.Elapsed);
         }
 
+        return ControlExperimentResult();
+    }
+    private ExperimentResult<T> ControlExperimentResult()
+    {
+        var stopwatch = Stopwatch.StartNew();
         T resultValue = _controlBehavior();
         var behaviorName = "control";
         stopwatch.Stop();
