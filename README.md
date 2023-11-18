@@ -1,6 +1,6 @@
 # Experimentor: A C# Refactoring Library
 
-Experimentor is a versatile C# library designed for refactoring important flows in C# applications. It offers a range of strategies for executing and comparing different code paths.
+Experimentor is a versatile C# library designed for refactoring important flows in C# applications. It offers a range of strategies for executing and comparing different code paths. Inspired by Githubs Scientist library for Ruby.
 
 ## Getting Started
 
