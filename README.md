@@ -31,14 +31,18 @@ var result = builder.Run();
 
 ### 1. Comparative Experiment Strategy
 
-Runs the control behavior.
+Runs the control behavior as well as all the candidates.
 
 ```csharp
-var builder = new ExperimentBuilder<int>(() => 42)
+IExperimentStrategy<int>? builder = new ExperimentBuilder<int>(() => 42)
     .AddCandidate("candidate", () => 69)
     .UseComparativeExperimentStrategy()
+    .OnExperimentCompleted((r) =>
+    {
+        Console.WriteLine($"Result: {r.Name} behavior with value {r.Value}");
+    })
     .Build();
-var result = builder.Run();
+
 // Result: Control behavior with value 42
 ```
 
