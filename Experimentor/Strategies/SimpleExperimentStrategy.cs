@@ -8,7 +8,6 @@ public class SimpleExperimentStrategy<T> : IExperimentStrategy<T>
     private readonly Func<T> _controlBehavior;
     private readonly Dictionary<string, Func<T>> _candidateBehaviors;
     private readonly Func<string, List<string>, string> _strategySelector;
-    public event Action<ExperimentResult<T>>? OnExperimentCompleted;
 
     public SimpleExperimentStrategy(Func<T> controlBehavior, Dictionary<string, Func<T>> candidateBehaviors, Func<string, List<string>, string> strategySelector)
     {

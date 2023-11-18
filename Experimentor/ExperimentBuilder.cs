@@ -1,8 +1,7 @@
 using Experimentor.Strategy;
-using System;
-using System.Collections.Generic;
-
 namespace Experimentor;
+
+using Experimentor.Strategy;
 
 public class ExperimentBuilder<T>
 {
@@ -53,6 +52,6 @@ public class ExperimentBuilder<T>
 
     public IExperimentStrategy<T> Build()
     {
-        return _selectedStrategy ?? new RandomSelectionExperimentStrategy<T>(_controlBehavior, _candidateBehaviors);
+        return _selectedStrategy ?? new ComparativeExperimentStrategy<T>(_controlBehavior, _candidateBehaviors);
     }
 }

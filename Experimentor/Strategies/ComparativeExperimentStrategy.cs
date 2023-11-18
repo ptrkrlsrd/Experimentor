@@ -24,18 +24,30 @@ public class ComparativeExperimentStrategy<T> : IExperimentStrategy<T>
 
     ExperimentResult<T> IExperimentStrategy<T>.Run()
     {
-        T controlResult = ExecuteBehavior(_controlBehavior, out TimeSpan controlDuration);
-
-        Dictionary<string, (T result, TimeSpan duration)> candidateResults = new();
-        var random = new Random();
-        foreach (KeyValuePair<string, Func<T>> candidate in _candidateBehaviors.OrderBy(_ => random.Next()))
-        {
-            T candidateResult = ExecuteBehavior(candidate.Value, out TimeSpan candidateDuration);
-            candidateResults[candidate.Key] = (candidateResult, candidateDuration);
-        }
-
+        T controlResult = ExecuteBehavior(_controlBehavior, out TimeSpan controlExecutionDuration);
+        Dictionary<string, (T result, TimeSpan duration)> candidateResults = ExecuteAndRecordBehaviors();
+        
         OnExperimentCompleted?.Invoke(new ExperimentResult<T>(controlResult, candidateResults));
+        
+        return CreateExperimentResult(controlResult, controlExecutionDuration);
+    }
 
-        return new ExperimentResult<T>(controlResult, "control", controlDuration);
+    private Dictionary<string, (T result, TimeSpan duration)> ExecuteAndRecordBehaviors()
+    {
+        IOrderedEnumerable<KeyValuePair<string, Func<T>>> behaviors = _candidateBehaviors.OrderBy(_ => new Random().Next()); 
+        Dictionary<string, (T result, TimeSpan duration)> results = new();
+
+        foreach (var behavior in behaviors)
+        {
+            T result = ExecuteBehavior(behavior.Value, out TimeSpan executionDuration);
+            results[behavior.Key] = (result, executionDuration);
+        }
+    
+        return results;
+    }
+
+    private ExperimentResult<T> CreateExperimentResult(T controlResult, TimeSpan controlExecutionDuration)
+    {
+        return new ExperimentResult<T>(controlResult, "control", controlExecutionDuration);
     }
 }
