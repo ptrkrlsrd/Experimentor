@@ -8,13 +8,14 @@ public class ComparativeExperimentStrategy<T> : IExperimentStrategy<T>, IExperim
     private readonly Func<T> _controlBehavior;
     private readonly Dictionary<string, Func<T>> _candidateBehaviors;
     public event Action<ExperimentResult<T>>? OnCandidateCompleted;
-    public void ExperimentCompleted(Action<ExperimentResult<T>> onCandidateCompleted) => OnCandidateCompleted += onCandidateCompleted;
 
     internal ComparativeExperimentStrategy(Func<T> controlBehavior, Dictionary<string, Func<T>> candidateBehaviors)
     {
         _controlBehavior = controlBehavior;
         _candidateBehaviors = candidateBehaviors;
     }
+    
+    public void ExperimentCompleted(Action<ExperimentResult<T>> onCandidateCompleted) => OnCandidateCompleted += onCandidateCompleted;
 
     private T ExecuteBehavior(Func<T> behavior, out TimeSpan duration)
     {
