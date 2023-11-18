@@ -16,7 +16,7 @@ public interface IEventSupportedExperimentBuilder<T> : IExperimentBuilder<T>
 public interface IExperimentBuilderWithCandidates<T> : IExperimentBuilder<T>
 {
     IEventSupportedExperimentBuilder<T> UseComparativeExperimentStrategy();
-    IExperimentBuilderWithCandidates<T> UseSimpleExperimentStrategy(Func<string, List<string>, string> strategySelector);
+    IExperimentBuilderWithCandidates<T> UseBehaviorSelectionStrategy(Func<string, List<string>, string> strategySelector);
     IExperimentBuilderWithCandidates<T> UseRandomSelectionStrategy(double controlProbability);
 }
 
@@ -50,9 +50,9 @@ public class ExperimentBuilder<T> : IExperimentBuilder<T>, IExperimentBuilderWit
         return this;
     }
 
-    public IExperimentBuilderWithCandidates<T> UseSimpleExperimentStrategy(Func<string, List<string>, string> strategySelector)
+    public IExperimentBuilderWithCandidates<T> UseBehaviorSelectionStrategy(Func<string, List<string>, string> strategySelector)
     {
-        _selectedStrategy = new SimpleExperimentStrategy<T>(_controlBehavior, _candidateBehaviors, strategySelector);
+        _selectedStrategy = new BehaviorSelectionStrategy<T>(_controlBehavior, _candidateBehaviors, strategySelector);
         return this;
     }
 

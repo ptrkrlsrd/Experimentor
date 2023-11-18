@@ -32,7 +32,7 @@ public class ExperimentTests
         // Act
         IExperimentStrategy<int>? builder = new ExperimentBuilder<int>(() => 42)
             .AddCandidate("candidate", () => 69)
-            .UseSimpleExperimentStrategy((_, _) => "candidate")
+            .UseBehaviorSelectionStrategy((_, _) => "candidate")
             .Build();
         ExperimentResult<int> result = builder.Run();
         // Assert
@@ -46,7 +46,7 @@ public class ExperimentTests
         // Act
         IExperimentStrategy<int>? builder = new ExperimentBuilder<int>(() => 42)
             .AddCandidate("candidate", () => 69)
-            .UseSimpleExperimentStrategy((_, _) => "control")
+            .UseBehaviorSelectionStrategy((_, _) => "control")
             .Build();
         ExperimentResult<int> result = builder.Run();
 
