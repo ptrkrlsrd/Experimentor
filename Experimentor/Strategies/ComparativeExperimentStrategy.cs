@@ -1,7 +1,8 @@
 namespace Experimentor.Strategy;
 
 using System.Diagnostics;
-public class ComparativeExperimentStrategy<T> : IExperimentStrategy<T>
+
+public class ComparativeExperimentStrategy<T> : IExperimentStrategy<T>, IExperimentEventSubscriber<T>
 {
     private readonly Func<T> _controlBehavior;
     private readonly Dictionary<string, Func<T>> _candidateBehaviors;
@@ -49,5 +50,10 @@ public class ComparativeExperimentStrategy<T> : IExperimentStrategy<T>
     private ExperimentResult<T> CreateExperimentResult(T controlResult, TimeSpan controlExecutionDuration)
     {
         return new ExperimentResult<T>(controlResult, "control", controlExecutionDuration);
+    }
+    
+    public void ExperimentCompleted(Action<ExperimentResult<T>> onExperimentCompleted)
+    {
+        OnExperimentCompleted += onExperimentCompleted;
     }
 }
