@@ -1,6 +1,6 @@
 # Experimentor: A C# Experimentation Library
 
-Experimentor is a versatile C# library designed for conducting experiments within software applications. It offers a range of strategies for executing and comparing different code paths, making it ideal for feature testing or performance evaluations.
+Experimentor is a versatile C# library designed for refactoring important flows in C# applications. It offers a range of strategies for executing and comparing different code paths.
 
 ## Getting Started
 
