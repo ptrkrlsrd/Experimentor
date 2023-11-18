@@ -2,7 +2,6 @@ namespace Experimentor.Strategy;
 
 using System.Diagnostics;
 using System.Collections.Generic;
-
 public class RandomSelectionExperimentStrategy<T> : IExperimentStrategy<T>
 {
     private readonly Func<T> _controlBehavior;
@@ -11,8 +10,8 @@ public class RandomSelectionExperimentStrategy<T> : IExperimentStrategy<T>
     private readonly double _controlProbability;
 
     public RandomSelectionExperimentStrategy(
-        Func<T> controlBehavior, 
-        Dictionary<string, Func<T>> candidateBehaviors, 
+        Func<T> controlBehavior,
+        Dictionary<string, Func<T>> candidateBehaviors,
         double controlProbability = 0.5) // Default probability is 0.5 (50%)
     {
         _controlBehavior = controlBehavior ?? throw new ArgumentNullException(nameof(controlBehavior));
@@ -25,13 +24,13 @@ public class RandomSelectionExperimentStrategy<T> : IExperimentStrategy<T>
     {
         var stopwatch = Stopwatch.StartNew();
         bool useCandidate = _random.NextDouble() >= _controlProbability;
-        
+
         if (!useCandidate) return ControlExperimentResult();
-        
+
         int candidateIndex = _random.Next(_candidateBehaviors.Count);
         KeyValuePair<string, Func<T>> selectedCandidate = _candidateBehaviors.ElementAt(candidateIndex);
         stopwatch.Stop();
-            
+
         return new ExperimentResult<T>(selectedCandidate.Value(), selectedCandidate.Key, stopwatch.Elapsed);
 
     }

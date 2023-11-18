@@ -1,8 +1,6 @@
 namespace Experimentor.Strategy;
 
 using System.Diagnostics;
-
-  
 public class SimpleExperimentStrategy<T> : IExperimentStrategy<T>
 {
     private readonly Func<T> _controlBehavior;

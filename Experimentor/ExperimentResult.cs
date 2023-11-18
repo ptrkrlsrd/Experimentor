@@ -20,4 +20,3 @@ public class ExperimentResult<T>
         CandidateResults = candidateResults;
     }
 }
-

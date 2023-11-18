@@ -1,8 +1,7 @@
 using Experimentor.Strategy;
 namespace Experimentor;
 
-using Experimentor.Strategy;
-
+using Strategy;
 public class ExperimentBuilder<T>
 {
     private readonly Func<T> _controlBehavior;

@@ -1,6 +1,6 @@
 namespace Experimentor.Strategy;
-using System.Diagnostics;
 
+using System.Diagnostics;
 public class ComparativeExperimentStrategy<T> : IExperimentStrategy<T>
 {
     private readonly Func<T> _controlBehavior;
@@ -26,23 +26,23 @@ public class ComparativeExperimentStrategy<T> : IExperimentStrategy<T>
     {
         T controlResult = ExecuteBehavior(_controlBehavior, out TimeSpan controlExecutionDuration);
         Dictionary<string, (T result, TimeSpan duration)> candidateResults = ExecuteAndRecordBehaviors();
-        
+
         OnExperimentCompleted?.Invoke(new ExperimentResult<T>(controlResult, candidateResults));
-        
+
         return CreateExperimentResult(controlResult, controlExecutionDuration);
     }
 
     private Dictionary<string, (T result, TimeSpan duration)> ExecuteAndRecordBehaviors()
     {
-        IOrderedEnumerable<KeyValuePair<string, Func<T>>> behaviors = _candidateBehaviors.OrderBy(_ => new Random().Next()); 
+        IOrderedEnumerable<KeyValuePair<string, Func<T>>> behaviors = _candidateBehaviors.OrderBy(_ => new Random().Next());
         Dictionary<string, (T result, TimeSpan duration)> results = new();
 
-        foreach (var behavior in behaviors)
+        foreach (KeyValuePair<string, Func<T>> behavior in behaviors)
         {
             T result = ExecuteBehavior(behavior.Value, out TimeSpan executionDuration);
             results[behavior.Key] = (result, executionDuration);
         }
-    
+
         return results;
     }
 

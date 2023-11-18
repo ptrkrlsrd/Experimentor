@@ -1,69 +1,73 @@
 using Experimentor.Strategy;
+
 namespace Experimentor.Tests;
 
 public class ExperimentTests
 {
-    private IExperimentStrategy<int> BuildExperimentStrategy(Func<ExperimentBuilder<int>, ExperimentBuilder<int>> configuration)
-    {
-        return configuration(new ExperimentBuilder<int>(() => 42)
-            .AddCandidate("candidate", () => 69))
-            .Build();
-    }
-
     [Fact]
     public void Run_ControlBehaviour()
     {
         // Act
-        var builder = BuildExperimentStrategy(b => b.UseComparativeExperimentStrategy());
+        IExperimentStrategy<int>? builder = new ExperimentBuilder<int>(() => 42)
+            .AddCandidate("candidate", () => 69)
+            .UseComparativeExperimentStrategy()
+            .Build();
         ExperimentResult<int> result = builder.Run();
-
         // Assert
         Assert.Equal(42, result.Result);
         Assert.Equal("control", result.BehaviorName);
     }
-    
+
     [Fact]
     public void Run_UsingSimpleExperimentStrategySelectsCandidate()
     {
         // Act
-        var builder = BuildExperimentStrategy(b => b.UseSimpleExperimentStrategy((_, _) => "candidate"));
+        IExperimentStrategy<int>? builder = new ExperimentBuilder<int>(() => 42)
+            .AddCandidate("candidate", () => 69)
+            .UseSimpleExperimentStrategy((_, _) => "candidate")
+            .Build();
         ExperimentResult<int> result = builder.Run();
-
         // Assert
         Assert.Equal(69, result.Result);
         Assert.Equal("candidate", result.BehaviorName);
     }
-    
+
     [Fact]
     public void Run_UsingSimpleExperimentStrategySelectsControl()
     {
         // Act
-        var builder = BuildExperimentStrategy(b => b.UseSimpleExperimentStrategy((_, _) => "control"));
-        ExperimentResult<int> result = builder.Run();
-    
-        // Assert
-        Assert.Equal(42, result.Result);
-        Assert.Equal("control", result.BehaviorName);
-    }
-    
-    [Fact]
-    public void Run_RandomSelectionStrategySelectsControlWhen1()
-    {
-        // Act
-        var builder = BuildExperimentStrategy(b => b.UseRandomSelectionStrategy(1));
+        IExperimentStrategy<int>? builder = new ExperimentBuilder<int>(() => 42)
+            .AddCandidate("candidate", () => 69)
+            .UseSimpleExperimentStrategy((_, _) => "control")
+            .Build();
         ExperimentResult<int> result = builder.Run();
 
         // Assert
         Assert.Equal(42, result.Result);
         Assert.Equal("control", result.BehaviorName);
     }
-    
+
+    [Fact]
+    public void Run_RandomSelectionStrategySelectsControlWhen1()
+    {
+        // Act
+        IExperimentStrategy<int>? builder = new ExperimentBuilder<int>(() => 42)
+            .AddCandidate("candidate", () => 69)
+            .UseRandomSelectionStrategy(1)
+            .Build();
+
+        ExperimentResult<int> result = builder.Run();
+        // Assert
+        Assert.Equal(42, result.Result);
+        Assert.Equal("control", result.BehaviorName);
+    }
+
     [Fact]
     public void Run_RandomlySelectsControlOrCandidate()
     {
         // Arrange
         int ControlBehavior() => 1;
-        
+
         Dictionary<string, Func<int>> candidateBehaviors = new()
         {
             { "candidate1", () => 2 }
@@ -74,7 +78,7 @@ public class ExperimentTests
         // Assert
         Assert.Contains(result.BehaviorName, new[] { "control", "candidate1" });
     }
-    
+
     [Fact]
     public void Run_SelectsBasedOnWeight()
     {
