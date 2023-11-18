@@ -9,7 +9,7 @@ public class BehaviorSelectionStrategy<T>(Func<T> controlBehavior,
 {
     public ExperimentResult<T> Run()
     {
-        string selectedStrategy = strategySelector(ControlBehaviourName, new List<string>(candidateBehaviors.Keys));
+        string selectedStrategy = strategySelector(ControlBehaviourName, [..candidateBehaviors.Keys]);
         var stopwatch = Stopwatch.StartNew();
 
         T result = selectedStrategy == ControlBehaviourName ? controlBehavior() : candidateBehaviors[selectedStrategy]();

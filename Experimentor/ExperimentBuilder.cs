@@ -20,11 +20,11 @@ public interface IExperimentBuilderWithCandidates<T> : IExperimentBuilder<T>
     IExperimentBuilderWithCandidates<T> UseRandomSelectionStrategy(double controlProbability);
 }
 
-public class ExperimentBuilder<T> : IExperimentBuilder<T>, IExperimentBuilderWithCandidates<T>, IEventSupportedExperimentBuilder<T>
+public class ExperimentBuilder<T> : IExperimentBuilderWithCandidates<T>, IEventSupportedExperimentBuilder<T>
 {
     private readonly Func<T> _controlBehavior;
     private readonly Dictionary<string, Func<T>> _candidateBehaviors = new();
-    private Action<ExperimentResult<T>>? _OnCandidateCompleted;
+    private Action<ExperimentResult<T>>? _onCandidateCompleted;
     private IExperimentStrategy<T>? _selectedStrategy;
 
     public ExperimentBuilder(Func<T> controlBehavior)
@@ -58,15 +58,15 @@ public class ExperimentBuilder<T> : IExperimentBuilder<T>, IExperimentBuilderWit
 
     public IEventSupportedExperimentBuilder<T> OnCandidateCompleted(Action<ExperimentResult<T>> OnCandidateCompleted)
     {
-        _OnCandidateCompleted = OnCandidateCompleted;
+        _onCandidateCompleted = OnCandidateCompleted;
         return this;
     }
 
     public IExperimentStrategy<T> Build()
     {
-        if (_selectedStrategy is ComparativeExperimentStrategy<T> comparativeStrategy)
+        if (_selectedStrategy is ComparativeExperimentStrategy<T> comparativeStrategy && _onCandidateCompleted is not null)
         {
-            comparativeStrategy?.ExperimentCompleted(_OnCandidateCompleted);
+            comparativeStrategy.ExperimentCompleted(_onCandidateCompleted);
         }
 
         return _selectedStrategy ?? throw new InvalidOperationException("A strategy must be set before building the experiment.");
