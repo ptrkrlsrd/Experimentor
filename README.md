@@ -72,6 +72,24 @@ var result = builder.Run();
 // Result: Randomly selected behavior
 ```
 
+
+## Benchmark
+
+### Methodology
+
+Tested using a random strategy with 1000 iterations, where 50% of the time the control behavior is selected.
+The control behavior is a simple function that performs a bubble sort, while the candidate behavior is a function that performs a quick sort.
+
+### Hardware
+* Macbook Pro 2023 (M2 Pro Max)
+
+| Method                  | Mean      | Error    | StdDev   | Gen0   | Allocated |
+|------------------------ |----------:|---------:|---------:|-------:|----------:|
+| RandomSelectionStrategy | 318.78 us | 3.137 us | 2.934 us | 1.9531 |  16.59 KB |
+| RunControlBehaviour     | 551.35 us | 0.587 us | 0.521 us | 1.9531 |  16.09 KB |
+| RunCandidateBehaviour   |  77.65 us | 0.108 us | 0.095 us | 1.9531 |  16.09 KB |
+
+
 ## License
 
 Experimentor is licensed under the MIT License. For more details, see the LICENSE file in the repository.

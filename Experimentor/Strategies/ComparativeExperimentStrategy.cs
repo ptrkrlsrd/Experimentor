@@ -33,7 +33,7 @@ public class ComparativeExperimentStrategy<T> : IExperimentStrategy<T>, IExperim
         T controlResult = ExecuteBehavior(_controlBehavior, out TimeSpan controlExecutionDuration);
         Dictionary<string, (T result, TimeSpan duration)> candidateResults = ExecuteAndRecordBehaviors();
 
-        return CreateExperimentResult(controlResult, controlExecutionDuration);
+        return new ExperimentResult<T>(controlResult, ControlBehaviourName, controlExecutionDuration, candidateResults);
     }
 
     private Dictionary<string, (T result, TimeSpan duration)> ExecuteAndRecordBehaviors()
@@ -49,10 +49,5 @@ public class ComparativeExperimentStrategy<T> : IExperimentStrategy<T>, IExperim
         }
 
         return results;
-    }
-
-    private ExperimentResult<T> CreateExperimentResult(T controlResult, TimeSpan controlExecutionDuration)
-    {
-        return new ExperimentResult<T>(controlResult, ControlBehaviourName, controlExecutionDuration);
     }
 }

@@ -19,4 +19,12 @@ public class ExperimentResult<T>
         Result = result;
         CandidateResults = candidateResults;
     }
+    
+    public ExperimentResult(T result, string behaviorName, TimeSpan duration, Dictionary<string, (T result, TimeSpan duration)> candidateResults)
+    {
+        Result = result;
+        Duration = duration;
+        BehaviorName = behaviorName;
+        CandidateResults = candidateResults;
+    }
 }

@@ -1,6 +1,3 @@
-using Experimentor.Strategy;
-using static Experimentor.Strategies.Constants;
-
 namespace Experimentor.Tests;
 
 public class ExperimentTests
@@ -9,7 +6,6 @@ public class ExperimentTests
     public void Run_ControlBehaviour()
     {
         // Act
-
         ExperimentResult<int> candidateResults = default;
         IExperimentStrategy<int>? builder = new ExperimentBuilder<int>(() => 42)
             .AddCandidate("candidate", () => 69)
@@ -20,6 +16,7 @@ public class ExperimentTests
             })
             .Build();
         ExperimentResult<int> result = builder.Run();
+        
         // Assert
         Assert.Equal(42, result.Result);
         Assert.Equal("candidate", candidateResults?.BehaviorName);
