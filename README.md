@@ -42,14 +42,14 @@ var result = builder.Run();
 // Result: Control behavior with value 42
 ```
 
-### 2. Simple Experiment Strategy
+### 2. Behaviour Selection Strategy
 
 Selects a specific behavior based on a custom selector.
 
 ```csharp
 var builder = new ExperimentBuilder<int>(() => 42)
     .AddCandidate("candidate", () => 69)
-    .UseSimpleExperimentStrategy((_, _) => "candidate")
+    .UseBehaviorSelectionStrategy((_, _) => "candidate")
     .Build();
 var result = builder.Run();
 // Result: Candidate behavior with value 69
