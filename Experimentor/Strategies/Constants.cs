@@ -2,5 +2,5 @@ namespace Experimentor.Strategies;
 
 public static class Constants
 {
-    public static string ControlBehaviourName = "control";
+    public const string ControlBehaviourName = "control";
 }
