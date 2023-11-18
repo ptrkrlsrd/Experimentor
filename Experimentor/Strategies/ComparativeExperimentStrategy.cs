@@ -1,12 +1,14 @@
 namespace Experimentor.Strategy;
 
 using System.Diagnostics;
+using static Experimentor.Strategies.Constants;
 
 public class ComparativeExperimentStrategy<T> : IExperimentStrategy<T>, IExperimentEventSubscriber<T>
 {
     private readonly Func<T> _controlBehavior;
     private readonly Dictionary<string, Func<T>> _candidateBehaviors;
     public event Action<ExperimentResult<T>>? OnExperimentCompleted;
+    public void ExperimentCompleted(Action<ExperimentResult<T>> onExperimentCompleted) => OnExperimentCompleted += onExperimentCompleted;
 
     internal ComparativeExperimentStrategy(Func<T> controlBehavior, Dictionary<string, Func<T>> candidateBehaviors)
     {
@@ -18,8 +20,10 @@ public class ComparativeExperimentStrategy<T> : IExperimentStrategy<T>, IExperim
     {
         var stopwatch = Stopwatch.StartNew();
         T result = behavior();
+        
         stopwatch.Stop();
         duration = stopwatch.Elapsed;
+        
         return result;
     }
 
@@ -27,8 +31,6 @@ public class ComparativeExperimentStrategy<T> : IExperimentStrategy<T>, IExperim
     {
         T controlResult = ExecuteBehavior(_controlBehavior, out TimeSpan controlExecutionDuration);
         Dictionary<string, (T result, TimeSpan duration)> candidateResults = ExecuteAndRecordBehaviors();
-
-        OnExperimentCompleted?.Invoke(new ExperimentResult<T>(controlResult, candidateResults));
 
         return CreateExperimentResult(controlResult, controlExecutionDuration);
     }
@@ -42,6 +44,7 @@ public class ComparativeExperimentStrategy<T> : IExperimentStrategy<T>, IExperim
         {
             T result = ExecuteBehavior(behavior.Value, out TimeSpan executionDuration);
             results[behavior.Key] = (result, executionDuration);
+            OnExperimentCompleted?.Invoke(new ExperimentResult<T>(result, behavior.Key, executionDuration));
         }
 
         return results;
@@ -49,11 +52,6 @@ public class ComparativeExperimentStrategy<T> : IExperimentStrategy<T>, IExperim
 
     private ExperimentResult<T> CreateExperimentResult(T controlResult, TimeSpan controlExecutionDuration)
     {
-        return new ExperimentResult<T>(controlResult, "control", controlExecutionDuration);
-    }
-    
-    public void ExperimentCompleted(Action<ExperimentResult<T>> onExperimentCompleted)
-    {
-        OnExperimentCompleted += onExperimentCompleted;
+        return new ExperimentResult<T>(controlResult, ControlBehaviourName, controlExecutionDuration);
     }
 }

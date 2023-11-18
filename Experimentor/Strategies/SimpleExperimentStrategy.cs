@@ -1,6 +1,8 @@
 namespace Experimentor.Strategy;
 
 using System.Diagnostics;
+using static Experimentor.Strategies.Constants;
+
 public class SimpleExperimentStrategy<T> : IExperimentStrategy<T>
 {
     private readonly Func<T> _controlBehavior;
@@ -16,10 +18,10 @@ public class SimpleExperimentStrategy<T> : IExperimentStrategy<T>
 
     public ExperimentResult<T> Run()
     {
-        string selectedStrategy = _strategySelector("control", new List<string>(_candidateBehaviors.Keys));
+        string selectedStrategy = _strategySelector(ControlBehaviourName, new List<string>(_candidateBehaviors.Keys));
         var stopwatch = Stopwatch.StartNew();
 
-        T result = selectedStrategy == "control" ? _controlBehavior() : _candidateBehaviors[selectedStrategy]();
+        T result = selectedStrategy == ControlBehaviourName ? _controlBehavior() : _candidateBehaviors[selectedStrategy]();
 
         stopwatch.Stop();
         return new ExperimentResult<T>(result, selectedStrategy, stopwatch.Elapsed);

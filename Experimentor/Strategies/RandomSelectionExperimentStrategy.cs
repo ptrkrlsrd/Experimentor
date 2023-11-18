@@ -1,7 +1,8 @@
+using static Experimentor.Strategies.Constants;
+using System.Diagnostics;
+
 namespace Experimentor.Strategy;
 
-using System.Diagnostics;
-using System.Collections.Generic;
 public class RandomSelectionExperimentStrategy<T> : IExperimentStrategy<T>
 {
     private readonly Func<T> _controlBehavior;
@@ -38,8 +39,7 @@ public class RandomSelectionExperimentStrategy<T> : IExperimentStrategy<T>
     {
         var stopwatch = Stopwatch.StartNew();
         T resultValue = _controlBehavior();
-        const string behaviorName = "control";
         stopwatch.Stop();
-        return new ExperimentResult<T>(resultValue, behaviorName, stopwatch.Elapsed);
+        return new ExperimentResult<T>(resultValue, ControlBehaviourName, stopwatch.Elapsed);
     }
 }
