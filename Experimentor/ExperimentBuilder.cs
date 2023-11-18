@@ -10,7 +10,7 @@ public interface IExperimentBuilder<T>
 
 public interface IEventSupportedExperimentBuilder<T> : IExperimentBuilder<T>
 {
-    IEventSupportedExperimentBuilder<T> OnExperimentCompleted(Action<ExperimentResult<T>> onExperimentCompleted);
+    IEventSupportedExperimentBuilder<T> OnCandidateCompleted(Action<ExperimentResult<T>> OnCandidateCompleted);
 }
 
 public interface IExperimentBuilderWithCandidates<T> : IExperimentBuilder<T>
@@ -24,7 +24,7 @@ public class ExperimentBuilder<T> : IExperimentBuilder<T>, IExperimentBuilderWit
 {
     private readonly Func<T> _controlBehavior;
     private readonly Dictionary<string, Func<T>> _candidateBehaviors = new();
-    private Action<ExperimentResult<T>>? _onExperimentCompleted;
+    private Action<ExperimentResult<T>>? _OnCandidateCompleted;
     private IExperimentStrategy<T>? _selectedStrategy;
 
     public ExperimentBuilder(Func<T> controlBehavior)
@@ -56,9 +56,9 @@ public class ExperimentBuilder<T> : IExperimentBuilder<T>, IExperimentBuilderWit
         return this;
     }
 
-    public IEventSupportedExperimentBuilder<T> OnExperimentCompleted(Action<ExperimentResult<T>> onExperimentCompleted)
+    public IEventSupportedExperimentBuilder<T> OnCandidateCompleted(Action<ExperimentResult<T>> OnCandidateCompleted)
     {
-        _onExperimentCompleted = onExperimentCompleted;
+        _OnCandidateCompleted = OnCandidateCompleted;
         return this;
     }
 
@@ -66,7 +66,7 @@ public class ExperimentBuilder<T> : IExperimentBuilder<T>, IExperimentBuilderWit
     {
         if (_selectedStrategy is ComparativeExperimentStrategy<T> comparativeStrategy)
         {
-            comparativeStrategy?.ExperimentCompleted(_onExperimentCompleted);
+            comparativeStrategy?.ExperimentCompleted(_OnCandidateCompleted);
         }
 
         return _selectedStrategy ?? throw new InvalidOperationException("A strategy must be set before building the experiment.");

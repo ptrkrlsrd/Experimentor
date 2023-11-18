@@ -14,7 +14,7 @@ public class ExperimentTests
         IExperimentStrategy<int>? builder = new ExperimentBuilder<int>(() => 42)
             .AddCandidate("candidate", () => 69)
             .UseComparativeExperimentStrategy()
-            .OnExperimentCompleted((r) =>
+            .OnCandidateCompleted((r) =>
             {
                 candidateResults = r;
             })

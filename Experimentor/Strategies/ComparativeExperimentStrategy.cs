@@ -7,8 +7,8 @@ public class ComparativeExperimentStrategy<T> : IExperimentStrategy<T>, IExperim
 {
     private readonly Func<T> _controlBehavior;
     private readonly Dictionary<string, Func<T>> _candidateBehaviors;
-    public event Action<ExperimentResult<T>>? OnExperimentCompleted;
-    public void ExperimentCompleted(Action<ExperimentResult<T>> onExperimentCompleted) => OnExperimentCompleted += onExperimentCompleted;
+    public event Action<ExperimentResult<T>>? OnCandidateCompleted;
+    public void ExperimentCompleted(Action<ExperimentResult<T>> OnCandidateCompleted) => OnCandidateCompleted += OnCandidateCompleted;
 
     internal ComparativeExperimentStrategy(Func<T> controlBehavior, Dictionary<string, Func<T>> candidateBehaviors)
     {
@@ -44,7 +44,7 @@ public class ComparativeExperimentStrategy<T> : IExperimentStrategy<T>, IExperim
         {
             T result = ExecuteBehavior(behavior.Value, out TimeSpan executionDuration);
             results[behavior.Key] = (result, executionDuration);
-            OnExperimentCompleted?.Invoke(new ExperimentResult<T>(result, behavior.Key, executionDuration));
+            OnCandidateCompleted?.Invoke(new ExperimentResult<T>(result, behavior.Key, executionDuration));
         }
 
         return results;

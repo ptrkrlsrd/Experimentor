@@ -37,7 +37,7 @@ Runs the control behavior as well as all the candidates.
 IExperimentStrategy<int>? builder = new ExperimentBuilder<int>(() => 42)
     .AddCandidate("candidate", () => 69)
     .UseComparativeExperimentStrategy()
-    .OnExperimentCompleted((r) =>
+    .OnCandidateCompleted((r) =>
     {
         Console.WriteLine($"Result: {r.Name} behavior with value {r.Value}");
     })

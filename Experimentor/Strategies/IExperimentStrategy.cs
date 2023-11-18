@@ -7,5 +7,5 @@ public interface IExperimentStrategy<T>
 
 public interface IExperimentEventSubscriber<T>
 {
-    void ExperimentCompleted(Action<ExperimentResult<T>> onExperimentCompleted);
+    void ExperimentCompleted(Action<ExperimentResult<T>> OnCandidateCompleted);
 }
