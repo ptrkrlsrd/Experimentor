@@ -68,10 +68,6 @@ var result = builder.Run();
 // Result: Randomly selected behavior
 ```
 
-## Contributing
-
-Contributions to Experimentor are welcome. Ensure your code adheres to the existing style and all tests pass.
-
 ## License
 
 Experimentor is licensed under the MIT License. For more details, see the LICENSE file in the repository.
