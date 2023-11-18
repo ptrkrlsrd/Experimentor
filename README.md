@@ -10,10 +10,10 @@ To integrate Experimentor in your project, add it as a reference in your project
 
 Experimentor supports several strategies:
 
+0. **Simple setup default strategy (Comparative Experiment Strategy)**
 1. **Comparative Experiment Strategy**
 2. **Simple Experiment Strategy**
 3. **Random Selection Strategy**
-4. **Weighted Strategy**
 
 Here's how to use each strategy with the Experimentor builder, illustrated with test examples.
 
