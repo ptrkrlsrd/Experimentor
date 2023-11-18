@@ -20,7 +20,6 @@ public interface IExperimentBuilderWithCandidates<T> : IExperimentBuilder<T>
     IExperimentBuilderWithCandidates<T> UseRandomSelectionStrategy(double controlProbability);
 }
 
-
 public class ExperimentBuilder<T> : IExperimentBuilder<T>, IExperimentBuilderWithCandidates<T>, IEventSupportedExperimentBuilder<T>
 {
     private readonly Func<T> _controlBehavior;
@@ -65,9 +64,9 @@ public class ExperimentBuilder<T> : IExperimentBuilder<T>, IExperimentBuilderWit
 
     public IExperimentStrategy<T> Build()
     {
-        if (_selectedStrategy is ComparativeExperimentStrategy<T> comparativeStrategy && _onExperimentCompleted != null)
+        if (_selectedStrategy is ComparativeExperimentStrategy<T> comparativeStrategy)
         {
-            comparativeStrategy.ExperimentCompleted(_onExperimentCompleted);
+            comparativeStrategy?.ExperimentCompleted(_onExperimentCompleted);
         }
 
         return _selectedStrategy ?? throw new InvalidOperationException("A strategy must be set before building the experiment.");
