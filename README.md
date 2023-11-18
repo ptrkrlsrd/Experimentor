@@ -4,7 +4,7 @@ Experimentor is a versatile C# library designed for refactoring important flows 
 
 ## Getting Started
 
-To integrate Experimentor in your project, add it as a reference in your project file. This enables you to use its functionalities for running experiments using various strategies.
+To integrate Experimentor in your project, add it as a reference in your project file. This enables you to use its functionalities for running experiments using various strategies. (Note: The project is not currently pushed to Nuget). 
 
 ## Strategies
 
