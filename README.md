@@ -66,7 +66,7 @@ Randomly selects between control and candidate behaviors.
 ```csharp
 var builder = new ExperimentBuilder<int>(() => 42)
     .AddCandidate("candidate", () => 69)
-    .UseRandomSelectionStrategy(1) // Probability for control
+    .UseRandomSelectionStrategy(0.5) // Probability for control
     .Build();
 var result = builder.Run();
 // Result: Randomly selected behavior
