@@ -72,6 +72,57 @@ var result = builder.Run();
 // Result: Randomly selected behavior
 ```
 
+## Example
+
+``` csharp
+using Experimentor;
+using Experimentor.Strategy;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+
+class Program
+{
+    static void Main(string[] args)
+    {
+        // Define the control behavior: Simple sum of numbers 1 to 1000
+        Func<int> controlBehavior = () => Enumerable.Range(1, 1000).Sum();
+
+        // Define a candidate behavior: Complex calculation (e.g., Fibonacci sequence sum for first 30 numbers)
+        Func<int> candidateBehavior = () => {
+            int a = 0, b = 1, sum = 0;
+            for (int i = 0; i < 30; i++)
+            {
+                sum += a;
+                int temp = a;
+                a = b;
+                b = temp + b;
+            }
+            return sum;
+        };
+
+        // Build the experiment
+        var experiment = new ExperimentBuilder<int>(controlBehavior)
+            .AddCandidate("candidate1", candidateBehavior)
+            .UseComparativeExperimentStrategy()
+            .OnExperimentCompleted(result => 
+            {
+                Console.WriteLine($"Experiment completed. Control: {result.ControlResult}, Candidate: {result.CandidateResults["candidate1"].result}");
+            })
+            .Build();
+
+        // Run the experiment
+        var result = experiment.Run();
+
+        // Output the results
+        Console.WriteLine($"Control result: {result.ControlResult}");
+        foreach (var candidate in result.CandidateResults)
+        {
+            Console.WriteLine($"Candidate {candidate.Key} result: {candidate.Value.result}");
+        }
+    }
+}
+```
 
 ## Benchmark
 
