@@ -7,22 +7,19 @@ public class RandomSelectionExperimentStrategy<T>(Func<T> controlBehavior,
                                                   Dictionary<string, Func<T>> candidateBehaviors, 
                                                   double controlProbability = 0.5) : IExperimentStrategy<T>
 {
-    private readonly Random _random = new();
 
     public ExperimentResult<T> Run()
     {
-        bool useCandidate = _random.NextDouble() >= controlProbability;
+        bool useCandidate = new Random().NextDouble() >= controlProbability;
 
-        if (!useCandidate) return ControlResult();
-
-        return CandidateResult();
-
+        return useCandidate ? CandidateResult() : ControlResult();
     }
     
     private ExperimentResult<T> CandidateResult()
     {
         var stopwatch = Stopwatch.StartNew();
-        int candidateIndex = _random.Next(candidateBehaviors.Count);
+        int candidateIndex = new Random().Next(candidateBehaviors.Count);
+        
         KeyValuePair<string, Func<T>> selectedCandidate = candidateBehaviors.ElementAt(candidateIndex);
         stopwatch.Stop();
 
