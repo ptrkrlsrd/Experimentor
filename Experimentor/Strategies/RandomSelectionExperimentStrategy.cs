@@ -11,19 +11,31 @@ public class RandomSelectionExperimentStrategy<T>(Func<T> controlBehavior,
 
     public ExperimentResult<T> Run()
     {
-        var stopwatch = Stopwatch.StartNew();
         bool useCandidate = _random.NextDouble() >= controlProbability;
 
-        if (!useCandidate) return ControlExperimentResult();
+        if (!useCandidate) return ControlResult();
 
+        return CandidateResult();
+
+    }
+    
+    private ExperimentResult<T> CandidateResult()
+    {
+        var stopwatch = Stopwatch.StartNew();
         int candidateIndex = _random.Next(candidateBehaviors.Count);
         KeyValuePair<string, Func<T>> selectedCandidate = candidateBehaviors.ElementAt(candidateIndex);
         stopwatch.Stop();
 
-        return new ExperimentResult<T>(selectedCandidate.Value(), selectedCandidate.Key, stopwatch.Elapsed);
-
+        T selectedCandidateValue = selectedCandidate.Value();
+        Dictionary<string, (T result, TimeSpan duration)> candidateResults = new()
+        {
+            { selectedCandidate.Key,  (selectedCandidateValue, stopwatch.Elapsed) }
+        };
+        
+        return new ExperimentResult<T>(selectedCandidateValue, selectedCandidate.Key, stopwatch.Elapsed, candidateResults);
     }
-    private ExperimentResult<T> ControlExperimentResult()
+    
+    private ExperimentResult<T> ControlResult()
     {
         var stopwatch = Stopwatch.StartNew();
         T resultValue = controlBehavior();

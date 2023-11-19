@@ -98,6 +98,15 @@ public class ExperimentTests
         // Act & Assert
         ExperimentResult<int> result = strategy.Run();
         Assert.Equal("candidate1", result.BehaviorName);
+        Assert.Single(result.CandidateResults);
         Assert.Equal(2, result.Result);
+    }
+    
+    [Fact]
+    public void Run_HasDuration()
+    {
+        // Arrange
+        ExperimentResult<int> result = new(10, "test", TimeSpan.MaxValue);
+        Assert.Equal(TimeSpan.MaxValue, result.Duration);
     }
 }
