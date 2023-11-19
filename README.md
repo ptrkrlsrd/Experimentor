@@ -12,7 +12,7 @@ Experimentor supports several strategies:
 
 0. **Simple setup default strategy (Comparative Experiment Strategy)**
 1. **Comparative Experiment Strategy**
-2. **Simple Experiment Strategy**
+2. **Behaviour Selection Strategyy**
 3. **Random Selection Strategy**
 
 Here's how to use each strategy with the Experimentor builder, illustrated with test examples.
