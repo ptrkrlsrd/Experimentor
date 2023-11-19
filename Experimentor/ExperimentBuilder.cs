@@ -20,17 +20,11 @@ public interface IExperimentBuilderWithCandidates<T> : IExperimentBuilder<T>
     IExperimentBuilderWithCandidates<T> UseRandomSelectionStrategy(double controlProbability);
 }
 
-public class ExperimentBuilder<T> : IExperimentBuilderWithCandidates<T>, IEventSupportedExperimentBuilder<T>
+public class ExperimentBuilder<T>(Func<T> controlBehavior) : IExperimentBuilderWithCandidates<T>, IEventSupportedExperimentBuilder<T>
 {
-    private readonly Func<T> _controlBehavior;
     private readonly Dictionary<string, Func<T>> _candidateBehaviors = new();
     private Action<ExperimentResult<T>>? _onCandidateCompleted;
     private IExperimentStrategy<T>? _selectedStrategy;
-
-    public ExperimentBuilder(Func<T> controlBehavior)
-    {
-        _controlBehavior = controlBehavior ?? throw new ArgumentNullException(nameof(controlBehavior));
-    }
 
     public IExperimentBuilderWithCandidates<T> AddCandidate(string name, Func<T> candidateBehavior)
     {
@@ -40,25 +34,25 @@ public class ExperimentBuilder<T> : IExperimentBuilderWithCandidates<T>, IEventS
 
     public IEventSupportedExperimentBuilder<T> UseComparativeExperimentStrategy()
     {
-        _selectedStrategy = new ComparativeExperimentStrategy<T>(_controlBehavior, _candidateBehaviors);
+        _selectedStrategy = new ComparativeExperimentStrategy<T>(controlBehavior, _candidateBehaviors);
         return this;
     }
     
     public IExperimentBuilderWithCandidates<T> UseRandomSelectionStrategy(double controlProbability)
     {
-        _selectedStrategy = new RandomSelectionExperimentStrategy<T>(_controlBehavior, _candidateBehaviors, controlProbability);
+        _selectedStrategy = new RandomSelectionExperimentStrategy<T>(controlBehavior, _candidateBehaviors, controlProbability);
         return this;
     }
 
     public IExperimentBuilderWithCandidates<T> UseBehaviorSelectionStrategy(Func<string, List<string>, string> strategySelector)
     {
-        _selectedStrategy = new BehaviorSelectionStrategy<T>(_controlBehavior, _candidateBehaviors, strategySelector);
+        _selectedStrategy = new BehaviorSelectionStrategy<T>(controlBehavior, _candidateBehaviors, strategySelector);
         return this;
     }
 
-    public IEventSupportedExperimentBuilder<T> OnCandidateCompleted(Action<ExperimentResult<T>> OnCandidateCompleted)
+    public IEventSupportedExperimentBuilder<T> OnCandidateCompleted(Action<ExperimentResult<T>> onCandidateCompleted)
     {
-        _onCandidateCompleted = OnCandidateCompleted;
+        _onCandidateCompleted = onCandidateCompleted;
         return this;
     }
 
