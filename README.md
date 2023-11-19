@@ -116,8 +116,8 @@ class Program
     static List<int> BubbleSort(List<int> list)
     {
         int n = list.Count;
-        for (int i = 0; i < n - 1; i++)
-            for (int j = 0; j < n - i - 1; j++)
+        for (int i = 0; i < n - 1; i++)  {
+            for (int j = 0; j < n - i - 1; j++) {
                 if (list[j] > list[j + 1])
                 {
                     // Swap temp and arr[i]
@@ -125,6 +125,8 @@ class Program
                     list[j] = list[j + 1];
                     list[j + 1] = temp;
                 }
+            }
+        }
         return list;
     }
 
