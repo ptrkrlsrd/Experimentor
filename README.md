@@ -85,29 +85,23 @@ class Program
 {
     static void Main(string[] args)
     {
-        // Define the control behavior: Simple sum of numbers 1 to 1000
-        Func<int> controlBehavior = () => Enumerable.Range(1, 1000).Sum();
+        // Generate a random list of numbers
+        var random = new Random();
+        var numbers = Enumerable.Range(1, 100).Select(_ => random.Next(1, 100)).ToList();
 
-        // Define a candidate behavior: Complex calculation (e.g., Fibonacci sequence sum for first 30 numbers)
-        Func<int> candidateBehavior = () => {
-            int a = 0, b = 1, sum = 0;
-            for (int i = 0; i < 30; i++)
-            {
-                sum += a;
-                int temp = a;
-                a = b;
-                b = temp + b;
-            }
-            return sum;
-        };
+        // Define the control behavior: Bubble Sort
+        Func<List<int>> controlBehavior = () => BubbleSort(new List<int>(numbers));
+
+        // Define a candidate behavior: QuickSort
+        Func<List<int>> candidateBehavior = () => QuickSort(new List<int>(numbers), 0, numbers.Count - 1);
 
         // Build the experiment
-        var experiment = new ExperimentBuilder<int>(controlBehavior)
-            .AddCandidate("candidate1", candidateBehavior)
+        var experiment = new ExperimentBuilder<List<int>>(controlBehavior)
+            .AddCandidate("QuickSort", candidateBehavior)
             .UseComparativeExperimentStrategy()
             .OnExperimentCompleted(result => 
             {
-                Console.WriteLine($"Experiment completed. Control: {result.ControlResult}, Candidate: {result.CandidateResults["candidate1"].result}");
+                Console.WriteLine($"Experiment completed. Control (BubbleSort) took {result.ControlDuration.TotalMilliseconds} ms, Candidate (QuickSort) took {result.CandidateResults["QuickSort"].duration.TotalMilliseconds} ms");
             })
             .Build();
 
@@ -115,11 +109,55 @@ class Program
         var result = experiment.Run();
 
         // Output the results
-        Console.WriteLine($"Control result: {result.ControlResult}");
-        foreach (var candidate in result.CandidateResults)
+        Console.WriteLine("Control (BubbleSort) result: " + string.Join(", ", result.ControlResult));
+        Console.WriteLine("Candidate (QuickSort) result: " + string.Join(", ", result.CandidateResults["QuickSort"].result));
+    }
+
+    static List<int> BubbleSort(List<int> list)
+    {
+        int n = list.Count;
+        for (int i = 0; i < n - 1; i++)
+            for (int j = 0; j < n - i - 1; j++)
+                if (list[j] > list[j + 1])
+                {
+                    // Swap temp and arr[i]
+                    int temp = list[j];
+                    list[j] = list[j + 1];
+                    list[j + 1] = temp;
+                }
+        return list;
+    }
+
+    static List<int> QuickSort(List<int> list, int low, int high)
+    {
+        if (low < high)
         {
-            Console.WriteLine($"Candidate {candidate.Key} result: {candidate.Value.result}");
+            int pi = Partition(list, low, high);
+
+            QuickSort(list, low, pi - 1);
+            QuickSort(list, pi + 1, high);
         }
+        return list;
+    }
+
+    static int Partition(List<int> list, int low, int high)
+    {
+        int pivot = list[high];
+        int i = (low - 1);
+        for (int j = low; j < high; j++)
+        {
+            if (list[j] < pivot)
+            {
+                i++;
+                int temp = list[i];
+                list[i] = list[j];
+                list[j] = temp;
+            }
+        }
+        int temp1 = list[i + 1];
+        list[i + 1] = list[high];
+        list[high] = temp1;
+        return i + 1;
     }
 }
 ```
