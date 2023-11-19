@@ -27,9 +27,9 @@ public class RandomSelectionExperimentStrategy<T>(Func<T> controlBehavior,
         stopwatch.Stop();
 
         T selectedCandidateValue = selectedCandidate.Value();
-        Dictionary<string, (T result, TimeSpan duration)> candidateResults = new()
+        Dictionary<string, CandidateResult<T>> candidateResults = new()
         {
-            { selectedCandidate.Key,  (selectedCandidateValue, stopwatch.Elapsed) }
+            { selectedCandidate.Key,  new(selectedCandidateValue, stopwatch.Elapsed) }
         };
         
         return new ExperimentResult<T>(selectedCandidateValue, selectedCandidate.Key, stopwatch.Elapsed, candidateResults);

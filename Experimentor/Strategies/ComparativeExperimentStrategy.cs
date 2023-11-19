@@ -31,20 +31,20 @@ public class ComparativeExperimentStrategy<T> : IExperimentStrategy<T>, IExperim
     public ExperimentResult<T> Run()
     {
         T controlResult = ExecuteBehavior(_controlBehavior, out TimeSpan controlExecutionDuration);
-        Dictionary<string, (T result, TimeSpan duration)>? candidateResults = ExecuteAndRecordBehaviors();
+        Dictionary<string, CandidateResult<T>> candidateResults = ExecuteAndRecordBehaviors();
 
         return new ExperimentResult<T>(controlResult, ControlBehaviourName, controlExecutionDuration, candidateResults);
     }
 
-    private Dictionary<string, (T result, TimeSpan duration)> ExecuteAndRecordBehaviors()
+    private Dictionary<string, CandidateResult<T>> ExecuteAndRecordBehaviors()
     {
         IOrderedEnumerable<KeyValuePair<string, Func<T>>> behaviors = _candidateBehaviors.OrderBy(_ => new Random().Next());
-        Dictionary<string, (T result, TimeSpan duration)>? results = new();
+        Dictionary<string, CandidateResult<T>> results = new();
 
         foreach (KeyValuePair<string, Func<T>> behavior in behaviors)
         {
             T result = ExecuteBehavior(behavior.Value, out TimeSpan executionDuration);
-            results[behavior.Key] = (result, executionDuration);
+            results[behavior.Key] = new(result, executionDuration);
             OnCandidateCompleted?.Invoke(new ExperimentResult<T>(result, behavior.Key, executionDuration));
         }
 
